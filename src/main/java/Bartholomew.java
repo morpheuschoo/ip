@@ -8,7 +8,10 @@ public class Bartholomew {
         bot.printBye();
     }
 
-    private String divider = "____________________________________________________________\n";
+    private final String divider = "____________________________________________________________\n";
+    
+    private int taskCount = 0;
+    private String[] tasks = new String[100];
 
     private void printStart() {
         String printResult = divider
@@ -24,18 +27,35 @@ public class Bartholomew {
         while (true) {
             input = scanner.nextLine();
             
-            if (input.equals("bye")) {
-                break;
+            switch(input) {
+                case "bye":
+                    scanner.close();
+                    return;
+                case "list":
+                    printList();
+                    break;
+                default:
+                    addTask(input);
+                    break;
             }
-
-            printEcho(input);
         }
-        scanner.close();
     }
 
-    private void printEcho(String msg) {
+    private void printList() {
+        String resultString = divider;
+        for (int i = 0; i < taskCount; i++) {
+            resultString += Integer.toString(i + 1) + ". " + tasks[i] + "\n";
+        }
+        resultString += divider;
+        System.out.println(resultString);
+    }
+
+    private void addTask(String task) {
+        tasks[taskCount] = task;
+        taskCount++;
+        
         String printResult = divider
-                            + msg + "\n"
+                            + "added: " + task + "\n"
                             + divider;
         System.out.println(printResult);
     }
