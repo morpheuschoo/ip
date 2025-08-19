@@ -104,7 +104,7 @@ public class Bartholomew {
 
         String printResult = divider
                             + "Nice! I've marked this task as done:\n"
-                            + tasks[taskNo - 1].toString() + "\n"
+                            + "  " + tasks[taskNo - 1].toString() + "\n"
                             + divider;
         
         System.out.println(printResult);
@@ -115,7 +115,7 @@ public class Bartholomew {
 
         String printResult = divider
                             + "OK, I've marked this task as not done yet:\n"
-                            + tasks[taskNo - 1].toString() + "\n"
+                            + "  " + tasks[taskNo - 1].toString() + "\n"
                             + divider;
         
         System.out.println(printResult);
