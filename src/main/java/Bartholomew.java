@@ -7,28 +7,6 @@ public class Bartholomew {
         bot.eventLoop();
         bot.printBye();
     }
-
-    private class Task {
-        private String desc;
-        private boolean completed;
-
-        public Task(String desc) {
-            this.desc = desc;
-            this.completed = false;
-        }
-
-        public String toString() {
-            return "[" + (this.completed ? "X" : " ") + "] " + this.desc;
-        }
-
-        public void markTask() {
-            this.completed = true;
-        }
-
-        public void unmarkTask() {
-            this.completed = false;
-        }
-    }
     
     private final String divider = "____________________________________________________________\n";
     
@@ -89,13 +67,39 @@ public class Bartholomew {
         System.out.println(resultString);
     }
 
-    private void addTask(String task) {
-        tasks[taskCount] = new Task(task);
-        taskCount++;
-        
+    private void addTask(String input) {
+        if (input.startsWith("todo")) {
+            tasks[taskCount] = new ToDo(input.substring(4).strip());
+        } else if (input.startsWith("deadline")) {
+            String remaining = input.substring(9).strip();
+            int sepIdx = remaining.indexOf(" /by ");
+
+            tasks[taskCount] = new Deadline(
+                remaining.substring(0, sepIdx).strip(),
+                remaining.substring(sepIdx + 5).strip()
+            );
+        } else if (input.startsWith("event")) {
+            String remaining = input.substring(6).strip();
+            int fromIdx = remaining.indexOf(" /from ");
+            int toIdx = remaining.indexOf(" /to ");
+
+            tasks[taskCount] = new Event(
+                remaining.substring(0, fromIdx).strip(),
+                remaining.substring(fromIdx + 7, toIdx).strip(),
+                remaining.substring(toIdx + 4).strip()
+            );            
+        } else {
+            return;
+        }
+
         String printResult = divider
-                            + "added: " + task + "\n"
-                            + divider;
+                           + "Got it. I've added this task:\n"
+                           + "  " +  tasks[taskCount].toString() + "\n"
+                           + "Now you have " + (taskCount + 1) + " tasks in the list.\n"
+                           + divider;
+
+        taskCount++;
+
         System.out.println(printResult);
     }
 
