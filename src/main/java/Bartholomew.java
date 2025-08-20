@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Bartholomew {
@@ -10,12 +11,10 @@ public class Bartholomew {
     
     private final String divider = "____________________________________________________________\n";
     
-    private Task[] tasks;
-    private int taskCount;
+    private ArrayList<Task> tasks;
 
     public Bartholomew() {
-        this.taskCount = 0;
-        this.tasks = new Task[100];
+        this.tasks = new ArrayList<>();
     }
 
     private void printStart() {
@@ -44,7 +43,7 @@ public class Bartholomew {
 
             if (input.startsWith("mark")) {
                 try {
-                    int taskNo = parseTaskNo(input, true);
+                    int taskNo = parseTaskNo(input, "mark");
                     markTask(taskNo);
                 } catch (BartholomewExceptions.InvalidTaskNumberException e) {
                     System.out.println(divider + e.getMessage() + "\n" + divider);
@@ -54,8 +53,18 @@ public class Bartholomew {
 
             if (input.startsWith("unmark")) {
                 try {
-                    int taskNo = parseTaskNo(input, false);
+                    int taskNo = parseTaskNo(input, "unmark");
                     unmarkTask(taskNo);
+                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                    System.out.println(divider + e.getMessage() + "\n" + divider);
+                }
+                continue;
+            }
+
+            if (input.startsWith("delete")) {
+                try {
+                    int taskNo = parseTaskNo(input, "delete");
+                    deleteTask(taskNo);
                 } catch (BartholomewExceptions.InvalidTaskNumberException e) {
                     System.out.println(divider + e.getMessage() + "\n" + divider);
                 }
@@ -68,8 +77,8 @@ public class Bartholomew {
 
     private void printList() {
         String resultString = divider;
-        for (int i = 0; i < this.taskCount; i++) {
-            resultString += Integer.toString(i + 1) + "." + tasks[i].toString() + "\n";
+        for (int i = 0; i < tasks.size(); i++) {
+            resultString += Integer.toString(i + 1) + "." + tasks.get(i).toString() + "\n";
         }
         resultString += divider;
         System.out.println(resultString);
@@ -83,7 +92,7 @@ public class Bartholomew {
                     throw new BartholomewExceptions.EmptyDescriptionException("todo");
                 }
                 
-                tasks[taskCount] = new ToDo(desc);
+                tasks.add(new ToDo(desc));
             } else if (input.startsWith("deadline")) {
                 String remaining = input.substring(9).strip();
                 int sepIdx = remaining.indexOf(" /by ");
@@ -97,10 +106,10 @@ public class Bartholomew {
                     throw new BartholomewExceptions.EmptyDescriptionException("deadline");
                 }
 
-                tasks[taskCount] = new Deadline(
+                tasks.add(new Deadline(
                     desc,
                     remaining.substring(sepIdx + 5).strip()
-                );
+                ));
             } else if (input.startsWith("event")) {
                 String remaining = input.substring(6).strip();
                 int fromIdx = remaining.indexOf(" /from ");
@@ -127,22 +136,20 @@ public class Bartholomew {
                 }
 
 
-                tasks[taskCount] = new Event(
+                tasks.add(new Event(
                     desc,
                     startTime,
                     endTime
-                );            
+                ));            
             } else {
                 throw new BartholomewExceptions.UnknownCommandException(input);
             }
 
             String printResult = divider
                             + "Got it. I've added this task:\n"
-                            + "  " +  tasks[taskCount].toString() + "\n"
-                            + "Now you have " + (taskCount + 1) + " tasks in the list.\n"
+                            + "  " +  tasks.get(tasks.size() - 1).toString() + "\n"
+                            + "Now you have " + tasks.size() + " tasks in the list.\n"
                             + divider;
-
-            taskCount++;
 
             System.out.println(printResult);
         } catch (
@@ -155,23 +162,34 @@ public class Bartholomew {
         }
     }
 
+    private void deleteTask(int taskNo) {
+        String printResult = divider
+                           + "Noted. I've removed this task:\n"
+                           + "  " + tasks.get(taskNo - 1).toString() + "\n"
+                           + "Now you have " + tasks.size() + " in the list.\n"
+                           + divider;
+        
+        tasks.remove(taskNo - 1);
+        System.out.println(printResult);
+    }
+
     private void markTask(int taskNo) {
-        tasks[taskNo - 1].markTask();
+        tasks.get(taskNo - 1).markTask();
 
         String printResult = divider
                             + "Nice! I've marked this task as done:\n"
-                            + "  " + tasks[taskNo - 1].toString() + "\n"
+                            + "  " + tasks.get(taskNo - 1).toString() + "\n"
                             + divider;
         
         System.out.println(printResult);
     }
 
     private void unmarkTask(int taskNo) {
-        tasks[taskNo - 1].unmarkTask();
+        tasks.get(taskNo - 1).unmarkTask();
 
         String printResult = divider
                             + "OK, I've marked this task as not done yet:\n"
-                            + "  " + tasks[taskNo - 1].toString() + "\n"
+                            + "  " + tasks.get(taskNo - 1).toString() + "\n"
                             + divider;
         
         System.out.println(printResult);
@@ -184,9 +202,18 @@ public class Bartholomew {
         System.out.println(printResult);
     }
 
-    private int parseTaskNo(String input, boolean isMark) 
+    private int parseTaskNo(String input, String command) 
         throws BartholomewExceptions.InvalidTaskNumberException {
-        int prefixLen = isMark ? 4 : 6;
+        int prefixLen = 0;
+        switch (command) {
+            case "mark":
+                prefixLen = 4;
+                break;
+            case "unmark":
+            case "delete":
+                prefixLen = 6;
+                break;
+        }
         try {
             String numberPart = input.substring(prefixLen).trim();
 
@@ -196,7 +223,7 @@ public class Bartholomew {
 
             int taskNo = Integer.parseInt(numberPart);
 
-            if (taskNo <= 0 || taskNo > taskCount) {
+            if (taskNo <= 0 || taskNo > tasks.size()) {
                 throw new BartholomewExceptions.InvalidTaskNumberException(taskNo);
             }
 
