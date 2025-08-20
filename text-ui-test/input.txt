@@ -7,5 +7,12 @@ mark 1
 mark 4
 list
 unmark 1
-list
+todo
+mark
+mark 1000
+mark sadasd
+unmark sadasd
+deadline return paper
+event sleep /to 70pm /from 7pm
+event wake up /from 100am
 bye

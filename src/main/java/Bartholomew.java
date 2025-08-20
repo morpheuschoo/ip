@@ -43,14 +43,22 @@ public class Bartholomew {
             }
 
             if (input.startsWith("mark")) {
-                int taskNo = Integer.parseInt(input.substring(4).trim());
-                markTask(taskNo);
+                try {
+                    int taskNo = parseTaskNo(input, true);
+                    markTask(taskNo);
+                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                    System.out.println(divider + e.getMessage() + "\n" + divider);
+                }
                 continue;
             }
 
             if (input.startsWith("unmark")) {
-                int taskNo = Integer.parseInt(input.substring(6).trim());
-                unmarkTask(taskNo);
+                try {
+                    int taskNo = parseTaskNo(input, false);
+                    unmarkTask(taskNo);
+                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                    System.out.println(divider + e.getMessage() + "\n" + divider);
+                }
                 continue;
             }
 
@@ -68,39 +76,83 @@ public class Bartholomew {
     }
 
     private void addTask(String input) {
-        if (input.startsWith("todo")) {
-            tasks[taskCount] = new ToDo(input.substring(4).strip());
-        } else if (input.startsWith("deadline")) {
-            String remaining = input.substring(9).strip();
-            int sepIdx = remaining.indexOf(" /by ");
+        try {
+            if (input.startsWith("todo")) {
+                String desc = input.substring(4).strip();
+                if (desc.isEmpty()) {
+                    throw new BartholomewExceptions.EmptyDescriptionException("todo");
+                }
+                
+                tasks[taskCount] = new ToDo(desc);
+            } else if (input.startsWith("deadline")) {
+                String remaining = input.substring(9).strip();
+                int sepIdx = remaining.indexOf(" /by ");
 
-            tasks[taskCount] = new Deadline(
-                remaining.substring(0, sepIdx).strip(),
-                remaining.substring(sepIdx + 5).strip()
-            );
-        } else if (input.startsWith("event")) {
-            String remaining = input.substring(6).strip();
-            int fromIdx = remaining.indexOf(" /from ");
-            int toIdx = remaining.indexOf(" /to ");
+                if (sepIdx == -1) {
+                    throw new BartholomewExceptions.MissingDeadlineException();
+                }
+                
+                String desc = remaining.substring(0, sepIdx).strip();
+                if (desc.isEmpty()) {
+                    throw new BartholomewExceptions.EmptyDescriptionException("deadline");
+                }
 
-            tasks[taskCount] = new Event(
-                remaining.substring(0, fromIdx).strip(),
-                remaining.substring(fromIdx + 7, toIdx).strip(),
-                remaining.substring(toIdx + 4).strip()
-            );            
-        } else {
-            return;
+                tasks[taskCount] = new Deadline(
+                    desc,
+                    remaining.substring(sepIdx + 5).strip()
+                );
+            } else if (input.startsWith("event")) {
+                String remaining = input.substring(6).strip();
+                int fromIdx = remaining.indexOf(" /from ");
+                int toIdx = remaining.indexOf(" /to ");
+
+                if (fromIdx == -1 || toIdx == -1) {
+                    throw new BartholomewExceptions.MissingEventTimeException();
+                }
+
+                String desc = remaining.substring(0, fromIdx).strip();
+                if (desc.isEmpty()) {
+                    throw new BartholomewExceptions.EmptyDescriptionException("event");
+                }
+
+                if (fromIdx > toIdx) {
+                    throw new BartholomewExceptions.MissingEventTimeException();
+                }
+
+                String startTime = remaining.substring(fromIdx + 7, toIdx).strip();
+                String endTime = remaining.substring(toIdx + 4).strip();
+
+                if (startTime.isEmpty() || endTime.isEmpty()) {
+                    throw new BartholomewExceptions.MissingEventTimeException();
+                }
+
+
+                tasks[taskCount] = new Event(
+                    desc,
+                    startTime,
+                    endTime
+                );            
+            } else {
+                throw new BartholomewExceptions.UnknownCommandException(input);
+            }
+
+            String printResult = divider
+                            + "Got it. I've added this task:\n"
+                            + "  " +  tasks[taskCount].toString() + "\n"
+                            + "Now you have " + (taskCount + 1) + " tasks in the list.\n"
+                            + divider;
+
+            taskCount++;
+
+            System.out.println(printResult);
+        } catch (
+            BartholomewExceptions.EmptyDescriptionException |
+            BartholomewExceptions.MissingEventTimeException |
+            BartholomewExceptions.MissingDeadlineException |
+            BartholomewExceptions.UnknownCommandException e
+        ) {
+            System.out.println(divider + e.getMessage() + "\n" + divider);
         }
-
-        String printResult = divider
-                           + "Got it. I've added this task:\n"
-                           + "  " +  tasks[taskCount].toString() + "\n"
-                           + "Now you have " + (taskCount + 1) + " tasks in the list.\n"
-                           + divider;
-
-        taskCount++;
-
-        System.out.println(printResult);
     }
 
     private void markTask(int taskNo) {
@@ -130,5 +182,28 @@ public class Bartholomew {
                             + "Bye. Hope to see you again soon!\n"
                             + divider;
         System.out.println(printResult);
+    }
+
+    private int parseTaskNo(String input, boolean isMark) 
+        throws BartholomewExceptions.InvalidTaskNumberException {
+        int prefixLen = isMark ? 4 : 6;
+        try {
+            String numberPart = input.substring(prefixLen).trim();
+
+            if (numberPart.isEmpty()) {
+                throw new BartholomewExceptions.InvalidTaskNumberException("");
+            }
+
+            int taskNo = Integer.parseInt(numberPart);
+
+            if (taskNo <= 0 || taskNo > taskCount) {
+                throw new BartholomewExceptions.InvalidTaskNumberException(taskNo);
+            }
+
+            return taskNo;
+        } catch (NumberFormatException e) {
+            String invalidNumber = input.substring(prefixLen).trim();
+            throw new BartholomewExceptions.InvalidTaskNumberException(invalidNumber);
+        }
     }
 }
