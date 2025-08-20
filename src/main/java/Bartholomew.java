@@ -2,11 +2,30 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Bartholomew {
-    public static void main(String[] args) {
-        Bartholomew bot = new Bartholomew();
-        bot.printStart();
-        bot.eventLoop();
-        bot.printBye();
+    private enum CommandType {
+        MARK("mark"),
+        UNMARK("unmark"),
+        DELETE("delete"),
+        LIST("list"),
+        TODO("todo"),
+        DEADLINE("deadline"),
+        EVENT("event"),
+        BYE("bye");
+
+        private final String command;
+
+        private CommandType(String command) {
+            this.command = command;
+        }
+
+        public static CommandType fromString(String input) {
+            for (CommandType c : CommandType.values()) {
+                if (input.startsWith(c.command)) {
+                    return c;
+                }
+            }
+            return null;
+        }
     }
     
     private final String divider = "____________________________________________________________\n";
@@ -30,48 +49,48 @@ public class Bartholomew {
         String input = "";
         while (true) {
             input = scanner.nextLine();
+            CommandType commandType = CommandType.fromString(input);
             
-            if (input.equals("bye")) {
-                scanner.close();
-                return;
-            }
-
-            if (input.equals("list")) {
-                printList();
+            if (commandType == null) {
+                addTask(input);
                 continue;
             }
 
-            if (input.startsWith("mark")) {
-                try {
-                    int taskNo = parseTaskNo(input, "mark");
-                    markTask(taskNo);
-                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
-                    System.out.println(divider + e.getMessage() + "\n" + divider);
-                }
-                continue;
+            switch (commandType) {
+                case BYE:
+                    scanner.close();
+                    return;
+                case LIST:
+                    printList();
+                    break;
+                case MARK:
+                    try {
+                        int taskNo = parseTaskNo(input, CommandType.MARK);
+                        markTask(taskNo);
+                    } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                        System.out.println(divider + e.getMessage() + "\n" + divider);
+                    }
+                    break;
+                case UNMARK:
+                    try {
+                        int taskNo = parseTaskNo(input, CommandType.UNMARK);
+                        unmarkTask(taskNo);
+                    } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                        System.out.println(divider + e.getMessage() + "\n" + divider);
+                    }
+                    break;
+                case DELETE:
+                    try {
+                        int taskNo = parseTaskNo(input, CommandType.DELETE);
+                        deleteTask(taskNo);
+                    } catch (BartholomewExceptions.InvalidTaskNumberException e) {
+                        System.out.println(divider + e.getMessage() + "\n" + divider);
+                    }
+                    break;
+                default:
+                    addTask(input);
+                    break;
             }
-
-            if (input.startsWith("unmark")) {
-                try {
-                    int taskNo = parseTaskNo(input, "unmark");
-                    unmarkTask(taskNo);
-                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
-                    System.out.println(divider + e.getMessage() + "\n" + divider);
-                }
-                continue;
-            }
-
-            if (input.startsWith("delete")) {
-                try {
-                    int taskNo = parseTaskNo(input, "delete");
-                    deleteTask(taskNo);
-                } catch (BartholomewExceptions.InvalidTaskNumberException e) {
-                    System.out.println(divider + e.getMessage() + "\n" + divider);
-                }
-                continue;
-            }
-
-            addTask(input);
         }
     }
 
@@ -202,18 +221,21 @@ public class Bartholomew {
         System.out.println(printResult);
     }
 
-    private int parseTaskNo(String input, String command) 
+    private int parseTaskNo(String input, CommandType command) 
         throws BartholomewExceptions.InvalidTaskNumberException {
         int prefixLen = 0;
         switch (command) {
-            case "mark":
+            case MARK:
                 prefixLen = 4;
                 break;
-            case "unmark":
-            case "delete":
+            case UNMARK:
+            case DELETE:
                 prefixLen = 6;
                 break;
+            default:
+                throw new IllegalArgumentException(command.name() + " cannot be used with parseTaskNo");
         }
+
         try {
             String numberPart = input.substring(prefixLen).trim();
 
@@ -232,5 +254,12 @@ public class Bartholomew {
             String invalidNumber = input.substring(prefixLen).trim();
             throw new BartholomewExceptions.InvalidTaskNumberException(invalidNumber);
         }
+    }
+
+    public static void main(String[] args) {
+        Bartholomew bot = new Bartholomew();
+        bot.printStart();
+        bot.eventLoop();
+        bot.printBye();
     }
 }
