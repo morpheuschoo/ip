@@ -12,6 +12,9 @@ import tasks.Task;
 import tasks.ToDo;
 
 import java.io.IOException;
+
+import java.time.format.DateTimeParseException;
+
 import exceptions.BartholomewExceptions;
 
 import utils.CommandType;
@@ -169,6 +172,12 @@ public class Bartholomew {
             BartholomewExceptions.UnknownCommandException e
         ) {
             System.out.println(MESSAGE_DIVIDER + e.getMessage() + "\n" + MESSAGE_DIVIDER);
+        } catch (DateTimeParseException e) {
+            System.out.println(MESSAGE_DIVIDER 
+                    + "Your date and time is entered in the wrong format.\n" 
+                    + "Enter it in this format: 2/12/2019 1800.\n"
+                    + "This corresponds to 2 December 2109, 7pm.\n"
+                    + MESSAGE_DIVIDER);
         }
     }
 
