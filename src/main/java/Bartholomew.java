@@ -1,11 +1,17 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+
 import tasks.Deadline;
 import tasks.Event;
 import tasks.Task;
 import tasks.ToDo;
 
+import java.io.IOException;
 import exceptions.BartholomewExceptions;
 
 import utils.CommandType;
@@ -142,10 +148,12 @@ public class Bartholomew {
                     desc,
                     startTime,
                     endTime
-                ));            
+                ));        
             } else {
                 throw new BartholomewExceptions.UnknownCommandException(input);
             }
+
+            saveTasksToFile();
 
             String printResult = MESSAGE_DIVIDER
                             + "Got it. I've added this task:\n"
@@ -172,11 +180,13 @@ public class Bartholomew {
                            + MESSAGE_DIVIDER;
         
         tasks.remove(taskNo - 1);
+        saveTasksToFile();
         System.out.println(printResult);
     }
 
     private void markTask(int taskNo) {
         tasks.get(taskNo - 1).markTask();
+        saveTasksToFile();
 
         String printResult = MESSAGE_DIVIDER
                             + "Nice! I've marked this task as done:\n"
@@ -188,6 +198,7 @@ public class Bartholomew {
 
     private void unmarkTask(int taskNo) {
         tasks.get(taskNo - 1).unmarkTask();
+        saveTasksToFile();
 
         String printResult = MESSAGE_DIVIDER
                             + "OK, I've marked this task as not done yet:\n"
@@ -240,8 +251,112 @@ public class Bartholomew {
         }
     }
 
+    private void initStart() {
+        File dataDir = new File("data");
+        if (!dataDir.exists()) {
+            dataDir.mkdir();
+        }
+
+        File dataFile = new File("data/bartholomew.txt");
+        try {
+            if (!dataFile.exists()) {
+                dataFile.createNewFile();
+            } else {
+                loadTasksFromFile();
+            }
+        } catch (IOException e) {
+            System.out.println(MESSAGE_DIVIDER + "Unable to open data file: " + e.getMessage()
+                    + MESSAGE_DIVIDER);
+        }
+    }
+
+    private void loadTasksFromFile() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("data/bartholomew.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" \\| ");
+                if (parts.length < 3) {
+                    continue;
+                    // SHOULD RETURN ERROR
+                }
+
+                String type = parts[0];
+                // SHOULD CHECK IF NOT 0 OR 1
+                boolean isDone = parts[1].equals("1");
+                String desc = parts[2];
+
+                Task task = null;
+
+                switch (type) {
+                case "T":
+                    task = new ToDo(desc);
+                    break;
+                case "D":
+                    // CHECK FOR THIS
+                    if (parts.length >= 4) {
+                        String deadline = parts[3];
+                        task = new Deadline(desc, deadline);
+                    }
+                    break;
+                case "E":
+                    // CHECK FOR THIS
+                    if (parts.length >= 5) {
+                        String from = parts[3];
+                        String to = parts[4];
+                        task = new Event(desc, from, to);
+                    }
+                    break;
+                }
+
+                // WHEN IT REACHES HERE TASK SHOULD BE NOT NULL
+                if (isDone) {
+                    task.markTask();
+                }
+                tasks.add(task);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println(MESSAGE_DIVIDER + "Error reading data from file: " + e.getMessage()
+                    + MESSAGE_DIVIDER);
+        }
+    }
+
+    private void saveTasksToFile() {
+        try {
+            FileWriter writer = new FileWriter("data/bartholomew.txt");
+            for (Task task : tasks) {
+                String line;
+                String desc = task.getDescription();
+                boolean isDone = task.isDone();
+
+                if (task instanceof ToDo) {
+                    line = "T | " + (isDone ? "1" : "0") + " | " + desc;
+                } else if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    line = "D | " + (isDone ? "1" : "0") + " | " + desc + " | " + deadline.getDueDate();
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+                    line = "E | " + (isDone ? "1" : "0") + " | " + desc + " | " 
+                            + event.getFrom() + " | " + event.getTo();
+                } else {
+                    continue;
+                }
+
+                writer.write(line + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(MESSAGE_DIVIDER + "Error saving data to file: " + e.getMessage()
+                    + MESSAGE_DIVIDER);
+        }
+    }
+
     public static void main(String[] args) {
         Bartholomew bot = new Bartholomew();
+        bot.initStart();
         bot.printStart();
         bot.eventLoop();
         bot.printBye();
