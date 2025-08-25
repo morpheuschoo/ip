@@ -9,6 +9,7 @@ public class Task {
         this.completed = false;
     }
 
+    @Override
     public String toString() {
         return "[" + (this.completed ? "X" : " ") + "] " + this.desc;
     }
@@ -19,5 +20,13 @@ public class Task {
 
     public void unmarkTask() {
         this.completed = false;
+    }
+
+    public String getDescription() {
+        return this.desc;
+    }
+
+    public boolean isDone() {
+        return this.completed;
     }
 }
