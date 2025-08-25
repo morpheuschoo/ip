@@ -1,3 +1,5 @@
+package exceptions;
+
 public class BartholomewExceptions {
     
     // Exception thrown when a task description is empty or missing.
