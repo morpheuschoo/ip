@@ -20,7 +20,8 @@ public class BartholomewExceptions extends Exception {
      */
     public static class MissingDeadlineException extends BartholomewExceptions {
         public MissingDeadlineException() {
-            super("The deadline format is incorrect.\nPlease use: deadline <description> /by <date>\n");
+            super("The deadline format is incorrect.\n"
+                    + "Please use: deadline <description> /by <date>\n");
         }
     }
     
@@ -29,7 +30,8 @@ public class BartholomewExceptions extends Exception {
      */
     public static class MissingEventTimeException extends BartholomewExceptions {
         public MissingEventTimeException() {
-            super("The event format is incorrect.\nPlease use: event <description> /from <start> /to <end>\n");
+            super("The event format is incorrect.\n"
+                    + "Please use: event <description> /from <start> /to <end>\n");
         }
     }
     
@@ -121,8 +123,8 @@ public class BartholomewExceptions extends Exception {
      */
     public static class TaskParseException extends StorageException {
         public TaskParseException(String line, String reason) {
-            super("Could not parse task from line: '" + line + "'.\n" +
-                  "Reason: " + reason + "\n");
+            super("Could not parse task from line: '" + line + "'.\n"
+                    + "Reason: " + reason + "\n");
         }
         
         public TaskParseException(String line) {

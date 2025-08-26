@@ -37,8 +37,7 @@ public class Storage {
             try {
                 boolean created = file.createNewFile();
                 if (!created) {
-                    throw new BartholomewExceptions.FileException(file.getPath(), 
-                            "Could not create file");
+                    throw new BartholomewExceptions.FileException(file.getPath(), "Could not create file");
                 }
             } catch (IOException e) {
                 throw new BartholomewExceptions.FileException(file.getPath(), e.getMessage());
@@ -75,8 +74,7 @@ public class Storage {
         try {
             String[] parts = line.split(" \\| ");
             if (parts.length < 3) {
-                throw new BartholomewExceptions.TaskParseException(line, 
-                        "Invalid format. \nExpected at least 3 parts.");
+                throw new BartholomewExceptions.TaskParseException(line, "Invalid format. \nExpected at least 3 parts.");
             }
             
             String type = parts[0];
@@ -91,31 +89,26 @@ public class Storage {
                     break;
                 case "D":
                     if (parts.length < 4) {
-                        throw new BartholomewExceptions.TaskParseException(line,
-                                "Deadline task is missing due date.");
+                        throw new BartholomewExceptions.TaskParseException(line, "Deadline task is missing due date.");
                     }
                     try {
                         task = new Deadline(description, parts[3]);
                     } catch (DateTimeParseException e) {
-                        throw new BartholomewExceptions.TaskParseException(line,
-                                "Invalid date format: " + e.getMessage());
+                        throw new BartholomewExceptions.TaskParseException(line, "Invalid date format: " + e.getMessage());
                     }
                     break;
                 case "E":
                     if (parts.length < 5) {
-                        throw new BartholomewExceptions.TaskParseException(line,
-                                "Event task is missing from/to times.");
+                        throw new BartholomewExceptions.TaskParseException(line, "Event task is missing from/to times.");
                     }
                     try {
                         task = new Event(description, parts[3], parts[4]);
                     } catch (DateTimeParseException e) {
-                        throw new BartholomewExceptions.TaskParseException(line,
-                                "Invalid date format: " + e.getMessage());
+                        throw new BartholomewExceptions.TaskParseException(line, "Invalid date format: " + e.getMessage());
                     }
                     break;
                 default:
-                    throw new BartholomewExceptions.TaskParseException(line,
-                            "Unknown task type: " + type);
+                    throw new BartholomewExceptions.TaskParseException(line, "Unknown task type: " + type);
             }
             
             if (isDone) {
@@ -146,10 +139,8 @@ public class Storage {
                     line = "D | " + (isDone ? "1" : "0") + " | " + desc + " | " + deadline.getDueDate();
                 } else if (task instanceof Event) {
                     Event event = (Event) task;
-                    line = "E | " + (isDone ? "1" : "0") + " | " + desc + " | " + 
-                           event.getFrom() + " | " + event.getTo();
+                    line = "E | " + (isDone ? "1" : "0") + " | " + desc + " | " + event.getFrom() + " | " + event.getTo();
                 } else {
-                    // Unknown task type
                     continue;
                 }
                 
