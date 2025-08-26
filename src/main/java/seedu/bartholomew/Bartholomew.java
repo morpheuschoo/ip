@@ -10,12 +10,22 @@ import seedu.bartholomew.tasks.Task;
 import seedu.bartholomew.tasks.TaskList;
 import seedu.bartholomew.ui.Ui;
 
+/**
+ * Main class for the Bartholomew task management application.
+ * This class coordinates the components of the application and handles the main program loop.
+ */
 public class Bartholomew {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
     private Parser parser;
 
+    /**
+     * Constructs a new Bartholomew application with the specified storage file path.
+     * Initializes UI, task list, and parser components, and attempts to load task data from storage.
+     *
+     * @param filePath Path to the file used for task persistence
+     */
     public Bartholomew(String filePath) {
         this.ui = new Ui();
         this.tasks = new TaskList();
@@ -36,6 +46,10 @@ public class Bartholomew {
         }
     }
 
+    /**
+     * Runs the main application loop.
+     * Displays welcome message, processes user commands until exit, and shows goodbye message.
+     */
     public void run() {
         ui.showWelcome();
         
@@ -123,6 +137,10 @@ public class Bartholomew {
         ui.showGoodbye();
     }
 
+    /**
+     * Saves the current task list to persistent storage.
+     * If storage is not available, this operation is silently skipped.
+     */
     private void saveToStorage() {
         if (storage != null) {
             try {
@@ -133,6 +151,12 @@ public class Bartholomew {
         }
     }
 
+    /**
+     * Main entry point for the Bartholomew application.
+     * Creates a new Bartholomew instance and runs it.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         new Bartholomew("data/bartholomew.txt").run();
     }
