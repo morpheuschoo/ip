@@ -131,4 +131,14 @@ public class BartholomewExceptions extends Exception {
             super("Could not parse task from line: '" + line + "'\n");
         }
     }
+
+    /**
+     * Exception thrown when a search term is empty.
+     */
+    public static class EmptySearchTermException extends BartholomewExceptions {
+        public EmptySearchTermException() {
+            super("The search term cannot be empty.\n"
+                    + "Please use: find <search term>\n");
+        }
+    }
 }

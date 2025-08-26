@@ -101,6 +101,28 @@ public class Ui {
                 + MESSAGE_DIVIDER;
         System.out.println(message);
     }
+
+    /**
+     * Displays a list of tasks that match a search term.
+     * 
+     * @param tasks List of matching tasks
+     * @param searchTerm The search term used
+     */
+    public void showSearchResults(List<Task> tasks, String searchTerm) {
+        StringBuilder result = new StringBuilder(MESSAGE_DIVIDER);
+        
+        if (tasks.isEmpty()) {
+            result.append("No matching tasks found for: \"").append(searchTerm).append("\"\n");
+        } else {
+            result.append("Here are the matching tasks in your list:\n");
+            for (int i = 0; i < tasks.size(); i++) {
+                result.append(i + 1).append(". ").append(tasks.get(i).toString()).append("\n");
+            }
+        }
+        
+        result.append(MESSAGE_DIVIDER);
+        System.out.println(result.toString());
+    }
     
     public String readCommand() {
         return this.scanner.nextLine();
