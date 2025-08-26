@@ -58,11 +58,9 @@ public class Bartholomew {
                 case BYE:
                     isRunning = false;
                     break;
-                    
                 case LIST:
                     ui.showTaskList(tasks.getTasks());
                     break;
-                
                 case TODO:
                     // Fallthrough
                 case DEADLINE:
@@ -79,7 +77,6 @@ public class Bartholomew {
                         ui.showDateFormatError();
                     }
                     break;
-                    
                 case MARK:
                     try {
                         int taskNo = parser.parseTaskNumber(input, CommandType.MARK, tasks.size());
@@ -90,7 +87,6 @@ public class Bartholomew {
                         ui.showError(e.getMessage());
                     }
                     break;
-                    
                 case UNMARK:
                     try {
                         int taskNo = parser.parseTaskNumber(input, CommandType.UNMARK, tasks.size());
@@ -101,7 +97,6 @@ public class Bartholomew {
                         ui.showError(e.getMessage());
                     }
                     break;
-                    
                 case DELETE:
                     try {
                         int taskNo = parser.parseTaskNumber(input, CommandType.DELETE, tasks.size());
@@ -112,7 +107,6 @@ public class Bartholomew {
                         ui.showError(e.getMessage());
                     }
                     break;
-                    
                 default:
                     try {
                         throw new BartholomewExceptions.UnknownCommandException(input);
@@ -122,7 +116,7 @@ public class Bartholomew {
                     break;
                 }
             } catch (Exception e) {
-                ui.showError("An error occurred: " + e.getMessage());
+                ui.showError("An error occurred: " + e.getMessage() + "\n");
             }
         }
         
