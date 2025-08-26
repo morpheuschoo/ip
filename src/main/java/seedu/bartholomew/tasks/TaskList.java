@@ -96,6 +96,26 @@ public class TaskList {
         }
         return tasks.get(index - 1);
     }
+
+    /**
+     * Searches for tasks containing the given search term in their description.
+     * Case-insensitive search.
+     * 
+     * @param searchTerm The term to search for
+     * @return A list of tasks matching the search term
+     */
+    public List<Task> findTasks(String searchTerm) {
+        List<Task> matchingTasks = new ArrayList<>();
+        String searchTermLower = searchTerm.toLowerCase();
+        
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(searchTermLower)) {
+                matchingTasks.add(task);
+            }
+        }
+        
+        return matchingTasks;
+    }
     
     /**
      * Gets all tasks in the task list.
