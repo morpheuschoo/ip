@@ -16,9 +16,21 @@ import seedu.bartholomew.tasks.ToDo;
 
 import seedu.bartholomew.exceptions.BartholomewExceptions;
 
+/**
+ * Manages persistent storage of tasks in the Bartholomew task management system.
+ * Handles reading tasks from and writing tasks to a file on disk.
+ */
 public class Storage {
     private final File file;
 
+    /**
+     * Creates a new Storage object to manage task persistence at the specified file path.
+     * Creates necessary directories and the file if they don't already exist.
+     *
+     * @param filePath The path where tasks should be saved
+     * @throws BartholomewExceptions.FileException If the file cannot be created
+     * @throws BartholomewExceptions.DirectoryException If the directory structure cannot be created
+     */
     public Storage(String filePath) 
             throws BartholomewExceptions.FileException, 
             BartholomewExceptions.DirectoryException {
@@ -46,6 +58,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads tasks from the storage file.
+     * Each line in the file represents one task.
+     * Lines that cannot be parsed are skipped with a warning message.
+     *
+     * @return A list of tasks loaded from the file
+     * @throws BartholomewExceptions.FileReadException If an error occurs while reading the file
+     */
     public List<Task> load() throws BartholomewExceptions.FileReadException {
         List<Task> tasks = new ArrayList<>();
         
@@ -71,6 +91,18 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Parses a single line from the storage file into a Task object.
+     * The format is: "TYPE | IS_DONE | DESCRIPTION [| ADDITIONAL_DATA...]"
+     * Where TYPE is "T" for ToDo, "D" for Deadline, or "E" for Event
+     * IS_DONE is "1" for completed tasks or "0" for incomplete tasks
+     * DESCRIPTION is the task description
+     * ADDITIONAL_DATA contains due dates for Deadline tasks or start/end times for Event tasks
+     *
+     * @param line The line to parse
+     * @return A Task object representing the parsed line
+     * @throws BartholomewExceptions.TaskParseException If the line cannot be parsed into a valid task
+     */
     private Task parseTaskFromLine(String line) throws BartholomewExceptions.TaskParseException {
         try {
             String[] parts = line.split(" \\| ");
@@ -132,6 +164,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Saves the provided list of tasks to the storage file.
+     * Each task is serialized into a single line in the file.
+     *
+     * @param tasks The list of tasks to save
+     * @throws BartholomewExceptions.FileWriteException If an error occurs while writing to the file
+     */
     public void save(List<Task> tasks) throws BartholomewExceptions.FileWriteException {
         try (FileWriter writer = new FileWriter(file)) {
             for (Task task : tasks) {
