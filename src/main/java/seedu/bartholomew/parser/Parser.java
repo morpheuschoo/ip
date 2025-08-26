@@ -74,48 +74,58 @@ public class Parser {
 
     private Task parseDeadline(String input) 
             throws BartholomewExceptions, DateTimeParseException {
-        String remaining = input.substring(9).strip();
-        int sepIdx = remaining.indexOf(" /by ");
-
+        String remaining = input.substring(8).strip();
+    
+        if (remaining.isEmpty()) {
+            throw new BartholomewExceptions.EmptyDescriptionException("deadline");
+        }
+        
+        int sepIdx = remaining.indexOf("/by ");
         if (sepIdx == -1) {
             throw new BartholomewExceptions.MissingDeadlineException();
         }
         
         String desc = remaining.substring(0, sepIdx).strip();
+        String dueDate = remaining.substring(sepIdx + 5).strip();
+        
         if (desc.isEmpty()) {
             throw new BartholomewExceptions.EmptyDescriptionException("deadline");
         }
-
-        String dueDate = remaining.substring(sepIdx + 5).strip();
+        
+        if (dueDate.isEmpty()) {
+            throw new BartholomewExceptions.MissingDeadlineException();
+        }
+        
         return new Deadline(desc, dueDate);
     }
 
     private Task parseEvent(String input) 
             throws BartholomewExceptions, DateTimeParseException {
-        String remaining = input.substring(6).strip();
-        int fromIdx = remaining.indexOf(" /from ");
-        int toIdx = remaining.indexOf(" /to ");
-
-        if (fromIdx == -1 || toIdx == -1) {
-            throw new BartholomewExceptions.MissingEventTimeException();
+        String remaining = input.substring(5).strip();
+    
+        if (remaining.isEmpty()) {
+            throw new BartholomewExceptions.EmptyDescriptionException("event");
         }
 
+        int fromIdx = remaining.indexOf("/from ");
+        int toIdx = remaining.indexOf("/to ");
+
+        if (fromIdx == -1 || toIdx == -1 || fromIdx > toIdx) {
+            throw new BartholomewExceptions.MissingEventTimeException();
+        }
+        
         String desc = remaining.substring(0, fromIdx).strip();
         if (desc.isEmpty()) {
             throw new BartholomewExceptions.EmptyDescriptionException("event");
         }
-
-        if (fromIdx > toIdx) {
-            throw new BartholomewExceptions.MissingEventTimeException();
-        }
-
+        
         String startTime = remaining.substring(fromIdx + 7, toIdx).strip();
         String endTime = remaining.substring(toIdx + 4).strip();
-
+        
         if (startTime.isEmpty() || endTime.isEmpty()) {
             throw new BartholomewExceptions.MissingEventTimeException();
         }
-
+        
         return new Event(desc, startTime, endTime);
     }
 }
