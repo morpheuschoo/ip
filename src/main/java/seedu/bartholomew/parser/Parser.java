@@ -128,4 +128,15 @@ public class Parser {
         
         return new Event(desc, startTime, endTime);
     }
+
+    public String parseSearchTerm(String input) 
+            throws BartholomewExceptions.EmptySearchTermException {
+        String searchTerm = input.substring(4).strip();
+        
+        if (searchTerm.isEmpty()) {
+            throw new BartholomewExceptions.EmptySearchTermException();
+        }
+        
+        return searchTerm;
+    }
 }

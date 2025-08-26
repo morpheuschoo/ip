@@ -1,6 +1,7 @@
 package seedu.bartholomew;
 
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import seedu.bartholomew.command.CommandType;
 import seedu.bartholomew.exceptions.BartholomewExceptions;
@@ -103,6 +104,15 @@ public class Bartholomew {
                         Task deletedTask = tasks.deleteTask(taskNo);
                         saveToStorage();
                         ui.showTaskDeleted(deletedTask, tasks.size());
+                    } catch (BartholomewExceptions e) {
+                        ui.showError(e.getMessage());
+                    }
+                    break;
+                case FIND:
+                    try {
+                        String searchTerm = parser.parseSearchTerm(input);
+                        List<Task> matchingTasks = tasks.findTasks(searchTerm);
+                        ui.showSearchResults(matchingTasks, searchTerm);
                     } catch (BartholomewExceptions e) {
                         ui.showError(e.getMessage());
                     }
