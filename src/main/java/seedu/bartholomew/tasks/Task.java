@@ -1,4 +1,4 @@
-package bartholomew.tasks;
+package seedu.bartholomew.tasks;
 
 public class Task {
     private String desc;

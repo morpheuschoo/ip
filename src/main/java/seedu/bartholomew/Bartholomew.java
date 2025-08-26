@@ -1,14 +1,14 @@
-package bartholomew;
+package seedu.bartholomew;
 
 import java.time.format.DateTimeParseException;
 
-import bartholomew.command.CommandType;
-import bartholomew.exceptions.BartholomewExceptions;
-import bartholomew.parser.Parser;
-import bartholomew.storage.Storage;
-import bartholomew.tasks.Task;
-import bartholomew.tasks.TaskList;
-import bartholomew.ui.Ui;
+import seedu.bartholomew.command.CommandType;
+import seedu.bartholomew.exceptions.BartholomewExceptions;
+import seedu.bartholomew.parser.Parser;
+import seedu.bartholomew.storage.Storage;
+import seedu.bartholomew.tasks.Task;
+import seedu.bartholomew.tasks.TaskList;
+import seedu.bartholomew.ui.Ui;
 
 public class Bartholomew {
     private Storage storage;

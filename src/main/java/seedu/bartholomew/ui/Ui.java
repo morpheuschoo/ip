@@ -1,9 +1,9 @@
-package bartholomew.ui;
+package seedu.bartholomew.ui;
 
 import java.util.List;
 import java.util.Scanner;
 
-import bartholomew.tasks.Task;
+import seedu.bartholomew.tasks.Task;
 
 public class Ui {
     private final String MESSAGE_DIVIDER = "____________________________________________________________\n";

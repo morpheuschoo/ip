@@ -1,4 +1,4 @@
-package bartholomew.exceptions;
+package seedu.bartholomew.exceptions;
 
 public class BartholomewExceptions extends Exception {
     
