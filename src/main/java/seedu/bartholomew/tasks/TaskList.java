@@ -1,9 +1,9 @@
-package bartholomew.tasks;
+package seedu.bartholomew.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bartholomew.exceptions.BartholomewExceptions;
+import seedu.bartholomew.exceptions.BartholomewExceptions;
 
 public class TaskList {
     private ArrayList<Task> tasks;

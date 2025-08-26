@@ -1,4 +1,4 @@
-package bartholomew.tasks;
+package seedu.bartholomew.tasks;
 
 public class ToDo extends Task{
     public ToDo(String desc) {

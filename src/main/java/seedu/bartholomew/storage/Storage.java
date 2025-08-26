@@ -1,4 +1,4 @@
-package bartholomew.storage;
+package seedu.bartholomew.storage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,12 +9,12 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bartholomew.tasks.Deadline;
-import bartholomew.tasks.Event;
-import bartholomew.tasks.Task;
-import bartholomew.tasks.ToDo;
+import seedu.bartholomew.tasks.Deadline;
+import seedu.bartholomew.tasks.Event;
+import seedu.bartholomew.tasks.Task;
+import seedu.bartholomew.tasks.ToDo;
 
-import bartholomew.exceptions.BartholomewExceptions;
+import seedu.bartholomew.exceptions.BartholomewExceptions;
 
 public class Storage {
     private final File file;

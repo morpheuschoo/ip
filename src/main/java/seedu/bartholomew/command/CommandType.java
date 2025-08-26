@@ -1,4 +1,4 @@
-package bartholomew.command;
+package seedu.bartholomew.command;
 
 public enum CommandType {
     MARK("mark"),

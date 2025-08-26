@@ -1,4 +1,4 @@
-package bartholomew.tasks;
+package seedu.bartholomew.tasks;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
