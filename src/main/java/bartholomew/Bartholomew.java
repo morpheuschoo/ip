@@ -1,12 +1,14 @@
+package bartholomew;
+
 import java.time.format.DateTimeParseException;
 
-import exceptions.BartholomewExceptions;
-import parser.Parser;
-import storage.Storage;
-import tasks.Task;
-import tasks.TaskList;
-import ui.Ui;
-import utils.CommandType;
+import bartholomew.command.CommandType;
+import bartholomew.exceptions.BartholomewExceptions;
+import bartholomew.parser.Parser;
+import bartholomew.storage.Storage;
+import bartholomew.tasks.Task;
+import bartholomew.tasks.TaskList;
+import bartholomew.ui.Ui;
 
 public class Bartholomew {
     private Storage storage;
@@ -62,9 +64,9 @@ public class Bartholomew {
                     break;
                 
                 case TODO:
-                    // Fallback
+                    // Fallthrough
                 case DEADLINE:
-                    // Fallback
+                    // Fallthrough
                 case EVENT:
                     try {
                         Task task = parser.parseTask(input);

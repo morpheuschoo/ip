@@ -1,4 +1,4 @@
-package storage;
+package bartholomew.storage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,12 +9,12 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tasks.Deadline;
-import tasks.Event;
-import tasks.Task;
-import tasks.ToDo;
+import bartholomew.tasks.Deadline;
+import bartholomew.tasks.Event;
+import bartholomew.tasks.Task;
+import bartholomew.tasks.ToDo;
 
-import exceptions.BartholomewExceptions;
+import bartholomew.exceptions.BartholomewExceptions;
 
 public class Storage {
     private final File file;

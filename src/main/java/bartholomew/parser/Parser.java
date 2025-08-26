@@ -1,14 +1,14 @@
-package parser;
+package bartholomew.parser;
 
 import java.time.format.DateTimeParseException;
 
-import tasks.Deadline;
-import tasks.Event;
-import tasks.Task;
-import tasks.ToDo;
+import bartholomew.command.CommandType;
+import bartholomew.tasks.Deadline;
+import bartholomew.tasks.Event;
+import bartholomew.tasks.Task;
+import bartholomew.tasks.ToDo;
 
-import exceptions.BartholomewExceptions;
-import utils.CommandType;
+import bartholomew.exceptions.BartholomewExceptions;
 
 public class Parser {
 

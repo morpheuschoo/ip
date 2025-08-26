@@ -1,4 +1,4 @@
-package utils;
+package bartholomew.command;
 
 public enum CommandType {
     MARK("mark"),

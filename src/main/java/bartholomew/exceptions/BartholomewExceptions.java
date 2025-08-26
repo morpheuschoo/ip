@@ -1,4 +1,4 @@
-package exceptions;
+package bartholomew.exceptions;
 
 public class BartholomewExceptions extends Exception {
     
