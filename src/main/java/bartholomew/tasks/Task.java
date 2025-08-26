@@ -1,4 +1,4 @@
-package tasks;
+package bartholomew.tasks;
 
 public class Task {
     private String desc;

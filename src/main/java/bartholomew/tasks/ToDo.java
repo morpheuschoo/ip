@@ -1,4 +1,4 @@
-package tasks;
+package bartholomew.tasks;
 
 public class ToDo extends Task{
     public ToDo(String desc) {
