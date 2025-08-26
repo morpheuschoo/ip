@@ -80,7 +80,7 @@ public class Parser {
             throw new BartholomewExceptions.EmptyDescriptionException("deadline");
         }
         
-        int sepIdx = remaining.indexOf("/by ");
+        int sepIdx = remaining.indexOf(" /by ");
         if (sepIdx == -1) {
             throw new BartholomewExceptions.MissingDeadlineException();
         }
@@ -107,8 +107,8 @@ public class Parser {
             throw new BartholomewExceptions.EmptyDescriptionException("event");
         }
 
-        int fromIdx = remaining.indexOf("/from ");
-        int toIdx = remaining.indexOf("/to ");
+        int fromIdx = remaining.indexOf(" /from ");
+        int toIdx = remaining.indexOf(" /to ");
 
         if (fromIdx == -1 || toIdx == -1 || fromIdx > toIdx) {
             throw new BartholomewExceptions.MissingEventTimeException();

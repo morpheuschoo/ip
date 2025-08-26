@@ -62,7 +62,7 @@ public class ParserTest {
 
     @Test
     public void parseTask_emptyDeadlineDescription_throwsEmptyDescriptionException() {
-        String input = "deadline /by 10/09/2023 1400";
+        String input = "deadline";
 
         assertThrows(BartholomewExceptions.EmptyDescriptionException.class, () -> {
             parser.parseTask(input);
@@ -109,7 +109,7 @@ public class ParserTest {
 
     @Test
     public void parseTask_emptyEventDescription_throwsEmptyDescriptionException() {
-        String input = "event /from 10/09/2023 1400 /to 10/09/2023 1600";
+        String input = "event";
 
         assertThrows(BartholomewExceptions.EmptyDescriptionException.class, () -> {
             parser.parseTask(input);
@@ -137,7 +137,7 @@ public class ParserTest {
     
     @Test
     public void parseTaskNumber_validUnmarkTaskNumber_returnsTaskNumber() throws BartholomewExceptions.InvalidTaskNumberException {
-        String input = "mark 1";
+        String input = "unmark 1";
         int totalTasks = 3;
         
         int result = parser.parseTaskNumber(input, CommandType.UNMARK, totalTasks);
