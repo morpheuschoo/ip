@@ -28,7 +28,8 @@ public class Parser {
             prefixLen = 6;
             break;
         default:
-            throw new IllegalArgumentException(command.name() + " cannot be used with parseTaskNumber");
+            throw new IllegalArgumentException(
+                    command.name() + " cannot be used with parseTaskNumber");
         }
 
         try {
