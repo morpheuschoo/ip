@@ -1,0 +1,121 @@
+package parser;
+
+import java.time.format.DateTimeParseException;
+
+import tasks.Deadline;
+import tasks.Event;
+import tasks.Task;
+import tasks.ToDo;
+
+import exceptions.BartholomewExceptions;
+import utils.CommandType;
+
+public class Parser {
+
+    public CommandType parseCommandType(String input) {
+        return CommandType.fromString(input);
+    }
+
+    public int parseTaskNumber(String input, CommandType command, int totalTasks) 
+            throws BartholomewExceptions.InvalidTaskNumberException {
+        int prefixLen = 0;
+        switch (command) {
+        case MARK:
+            prefixLen = 4;
+            break;
+        case UNMARK:
+        case DELETE:
+            prefixLen = 6;
+            break;
+        default:
+            throw new IllegalArgumentException(command.name() + " cannot be used with parseTaskNumber");
+        }
+
+        try {
+            String numberPart = input.substring(prefixLen).trim();
+
+            if (numberPart.isEmpty()) {
+                throw new BartholomewExceptions.InvalidTaskNumberException("");
+            }
+
+            int taskNo = Integer.parseInt(numberPart);
+
+            if (taskNo <= 0 || taskNo > totalTasks) {
+                throw new BartholomewExceptions.InvalidTaskNumberException(taskNo);
+            }
+
+            return taskNo;
+        } catch (NumberFormatException e) {
+            String invalidNumber = input.substring(prefixLen).trim();
+            throw new BartholomewExceptions.InvalidTaskNumberException(invalidNumber);
+        }
+    }
+
+    public Task parseTask(String input) 
+            throws BartholomewExceptions, DateTimeParseException {
+        if (input.startsWith("todo")) {
+            return parseTodo(input);
+        } else if (input.startsWith("deadline")) {
+            return parseDeadline(input);
+        } else if (input.startsWith("event")) {
+            return parseEvent(input);
+        } else {
+            throw new BartholomewExceptions.UnknownCommandException(input);
+        }
+    }
+
+    private Task parseTodo(String input) throws BartholomewExceptions.EmptyDescriptionException {
+        String desc = input.substring(4).strip();
+        if (desc.isEmpty()) {
+            throw new BartholomewExceptions.EmptyDescriptionException("todo");
+        }
+        return new ToDo(desc);
+    }
+
+    private Task parseDeadline(String input) 
+            throws BartholomewExceptions, DateTimeParseException {
+        String remaining = input.substring(9).strip();
+        int sepIdx = remaining.indexOf(" /by ");
+
+        if (sepIdx == -1) {
+            throw new BartholomewExceptions.MissingDeadlineException();
+        }
+        
+        String desc = remaining.substring(0, sepIdx).strip();
+        if (desc.isEmpty()) {
+            throw new BartholomewExceptions.EmptyDescriptionException("deadline");
+        }
+
+        String dueDate = remaining.substring(sepIdx + 5).strip();
+        return new Deadline(desc, dueDate);
+    }
+
+    private Task parseEvent(String input) 
+            throws BartholomewExceptions, DateTimeParseException {
+        String remaining = input.substring(6).strip();
+        int fromIdx = remaining.indexOf(" /from ");
+        int toIdx = remaining.indexOf(" /to ");
+
+        if (fromIdx == -1 || toIdx == -1) {
+            throw new BartholomewExceptions.MissingEventTimeException();
+        }
+
+        String desc = remaining.substring(0, fromIdx).strip();
+        if (desc.isEmpty()) {
+            throw new BartholomewExceptions.EmptyDescriptionException("event");
+        }
+
+        if (fromIdx > toIdx) {
+            throw new BartholomewExceptions.MissingEventTimeException();
+        }
+
+        String startTime = remaining.substring(fromIdx + 7, toIdx).strip();
+        String endTime = remaining.substring(toIdx + 4).strip();
+
+        if (startTime.isEmpty() || endTime.isEmpty()) {
+            throw new BartholomewExceptions.MissingEventTimeException();
+        }
+
+        return new Event(desc, startTime, endTime);
+    }
+}
