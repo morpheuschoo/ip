@@ -9,9 +9,6 @@ import java.time.format.DateTimeParseException;
  * Extends the base Task class.
  */
 public class Event extends Task {
-    private LocalDateTime from;
-    private LocalDateTime to;
-
     /** Format for parsing date and time input from the user. */
     private static final DateTimeFormatter INPUT_FORMAT =
             DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
@@ -19,6 +16,9 @@ public class Event extends Task {
     /** Format for displaying date and time to the user. */
     private static final DateTimeFormatter DISPLAY_FORMATTER = 
             DateTimeFormatter.ofPattern("d MMMM yyyy, h:mma");
+
+    private LocalDateTime from;
+    private LocalDateTime to;
     
     /**
      * Creates a new event task with the given description, start time, and end time.
