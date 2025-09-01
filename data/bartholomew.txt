@@ -5,3 +5,4 @@ T | 0 | join sports club
 T | 0 | borrow book
 T | 0 | sleep
 D | 0 | cry | 12/12/2012 0000
+T | 1 | run
