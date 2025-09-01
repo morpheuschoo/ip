@@ -5,7 +5,7 @@ package seedu.bartholomew.tasks;
  * Extends the base Task class.
  */
 public class ToDo extends Task {
-    
+
     /**
      * Creates a new to-do task with the given description.
      *
