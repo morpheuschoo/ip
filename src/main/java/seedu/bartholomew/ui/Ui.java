@@ -1,36 +1,27 @@
 package seedu.bartholomew.ui;
 
 import java.util.List;
-import java.util.Scanner;
 
 import seedu.bartholomew.tasks.Task;
 
 public class Ui {
-    private final String MESSAGE_DIVIDER = "____________________________________________________________\n";
-    private final Scanner scanner;
     
     public Ui() {
-        scanner = new Scanner(System.in);
     }
     
-    public void showWelcome() {
-        String message = MESSAGE_DIVIDER
-                + "Hello! I'm Bartholomew\n"
-                + "What can I do for you?\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+    public String showWelcome() {
+        String message = "Hello! I'm Bartholomew\n"
+                + "What can I do for you?\n";
+        return message;
     }
     
-    public void showGoodbye() {
-        String message = MESSAGE_DIVIDER
-                + "Bye. Hope to see you again soon!\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
-        this.scanner.close();
+    public String showGoodbye() {
+        String message = "Bye. Hope to see you again soon!\n";
+        return message;
     }
     
-    public void showTaskList(List<Task> tasks) {
-        StringBuilder result = new StringBuilder(MESSAGE_DIVIDER);
+    public String showTaskList(List<Task> tasks) {
+        StringBuilder result = new StringBuilder();
         
         if (tasks.isEmpty()) {
             result.append("You have no tasks in your list.\n");
@@ -41,75 +32,56 @@ public class Ui {
             }
         }
         
-        result.append(MESSAGE_DIVIDER);
-        System.out.println(result.toString());
+        return result.toString();
     }
     
-    public void showTaskAdded(Task task, int taskCount) {
-        String message = MESSAGE_DIVIDER
-                + "Got it. I've added this task:\n"
+    public String showTaskAdded(Task task, int taskCount) {
+        String message = "Got it. I've added this task:\n"
                 + "  " + task.toString() + "\n"
                 + "Now you have " + taskCount + " task"
-                + (taskCount == 1 ? "" : "s") + " in the list.\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+                + (taskCount == 1 ? "" : "s") + " in the list.\n";
+        return message;
     }
     
-    public void showTaskDeleted(Task task, int taskCount) {
-        String message = MESSAGE_DIVIDER
-                + "Noted. I've removed this task:\n"
+    public String showTaskDeleted(Task task, int taskCount) {
+        String message = "Noted. I've removed this task:\n"
                 + "  " + task.toString() + "\n"
                 + "Now you have " + taskCount + " task"
-                + (taskCount == 1 ? "" : "s") + " in the list.\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+                + (taskCount == 1 ? "" : "s") + " in the list.\n";
+        return message;
     }
     
-    public void showTaskMarked(Task task) {
-        String message = MESSAGE_DIVIDER
-                + "Nice! I've marked this task as done:\n"
-                + "  " + task.toString() + "\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+    public String showTaskMarked(Task task) {
+        String message = "Nice! I've marked this task as done:\n"
+                + "  " + task.toString() + "\n";
+        return message;
     }
     
-    public void showTaskUnmarked(Task task) {
-        String message = MESSAGE_DIVIDER
-                + "OK, I've marked this task as not done yet:\n"
-                + "  " + task.toString() + "\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+    public String showTaskUnmarked(Task task) {
+        String message = "OK, I've marked this task as not done yet:\n"
+                + "  " + task.toString() + "\n";
+        return message;
     }
     
-    public void showTasksLoaded(int taskCount) {
-        String message = MESSAGE_DIVIDER
-                + "Loaded " + taskCount + " task"
-                + (taskCount == 1 ? "" : "s") + ".\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+    public String showTasksLoaded(int taskCount) {
+        String message = "[I have loaded " + taskCount + " task"
+                + (taskCount == 1 ? "" : "s") + "]\n";
+        return message;
     }
     
-    public void showError(String message) {
-        System.out.println(MESSAGE_DIVIDER + message + MESSAGE_DIVIDER);
+    public String showError(String message) {
+        return message + "\n";
     }
     
-    public void showDateFormatError() {
-        String message = MESSAGE_DIVIDER
-                + "Your date and time is entered in the wrong format.\n" 
+    public String showDateFormatError() {
+        String message = "Your date and time is entered in the wrong format.\n" 
                 + "Enter it in this format: 2/12/2019 1800.\n"
-                + "This corresponds to 2 December 2019, 6pm.\n"
-                + MESSAGE_DIVIDER;
-        System.out.println(message);
+                + "This corresponds to 2 December 2019, 6pm.\n";
+        return message;
     }
 
-    /**
-     * Displays a list of tasks that match a search term.
-     * 
-     * @param tasks List of matching tasks
-     * @param searchTerm The search term used
-     */
-    public void showSearchResults(List<Task> tasks, String searchTerm) {
-        StringBuilder result = new StringBuilder(MESSAGE_DIVIDER);
+    public String showSearchResults(List<Task> tasks, String searchTerm) {
+        StringBuilder result = new StringBuilder();
         
         if (tasks.isEmpty()) {
             result.append("No matching tasks found for: \"").append(searchTerm).append("\"\n");
@@ -120,11 +92,6 @@ public class Ui {
             }
         }
         
-        result.append(MESSAGE_DIVIDER);
-        System.out.println(result.toString());
-    }
-    
-    public String readCommand() {
-        return this.scanner.nextLine();
+        return result.toString();
     }
 }
