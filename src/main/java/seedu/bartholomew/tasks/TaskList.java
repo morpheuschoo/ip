@@ -25,6 +25,7 @@ public class TaskList {
      * @param tasks The initial list of tasks
      */
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "Tasks list cannot be null";
         this.tasks = new ArrayList<>(tasks);
     }
     
@@ -34,6 +35,7 @@ public class TaskList {
      * @param task The task to add
      */
     public void addTask(Task task) {
+        assert task != null : "Cannot add null task";
         tasks.add(task);
     }
     
@@ -91,6 +93,7 @@ public class TaskList {
      * @throws BartholomewExceptions.InvalidTaskNumberException If the index is invalid
      */
     public Task getTask(int index) throws BartholomewExceptions.InvalidTaskNumberException {
+        assert index >= 0 && index < tasks.size() : "Task index out of bounds: " + index;
         if (index < 1 || index > tasks.size()) {
             throw new BartholomewExceptions.InvalidTaskNumberException(index);
         }
@@ -114,6 +117,9 @@ public class TaskList {
             }
         }
         
+        assert searchTerm != null : "Search term cannot be null";
+        assert matchingTasks != null : "matchingTasks should never be null";
+
         return matchingTasks;
     }
     
