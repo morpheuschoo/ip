@@ -50,6 +50,21 @@ public class Ui {
                 + (taskCount == 1 ? "" : "s") + " in the list.\n";
         return message;
     }
+
+    public String showMultipleTasksDeleted(List<Task> deletedTasks, int remainingTaskCount) {
+        StringBuilder message = new StringBuilder("Noted. I've removed these tasks:\n");
+        
+        for (int i = 0; i < deletedTasks.size(); i++) {
+            message.append("  ").append(i + 1).append(". ")
+                .append(deletedTasks.get(i)).append("\n");
+        }
+        
+        message.append("Now you have ").append(remainingTaskCount)
+            .append(remainingTaskCount == 1 ? " task" : " tasks")
+            .append(" in the list.\n");
+        
+        return message.toString();
+    }
     
     public String showTaskMarked(Task task) {
         String message = "Nice! I've marked this task as done:\n"

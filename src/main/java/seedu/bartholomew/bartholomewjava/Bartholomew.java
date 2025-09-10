@@ -85,7 +85,7 @@ public class Bartholomew {
             case TODO:
                 // Passthrough
             case DEADLINE:
-                // passthrough
+                // Passthrough
             case EVENT:
                 return handleAddTaskCommand(input);
             case MARK:
@@ -179,10 +179,17 @@ public class Bartholomew {
      * @throws BartholomewExceptions If there is an error with the task number
      */
     private String handleDeleteCommand(String input) throws BartholomewExceptions {
-        int taskNo = parser.parseTaskNumber(input, CommandType.DELETE, tasks.size());
-        Task deletedTask = tasks.deleteTask(taskNo);
-        saveToStorage();
-        return ui.showTaskDeleted(deletedTask, tasks.size());
+        if (input.substring(6).trim().contains(",")) {
+            List<Integer> taskNumbers = parser.parseMultipleTaskNumbers(input, CommandType.DELETE, tasks.size());
+            List<Task> deletedTasks = tasks.deleteMultipleTasks(taskNumbers);
+            saveToStorage();
+            return ui.showMultipleTasksDeleted(deletedTasks, tasks.size());
+        } else {
+            int taskNo = parser.parseTaskNumber(input, CommandType.DELETE, tasks.size());
+            Task deletedTask = tasks.deleteTask(taskNo);
+            saveToStorage();
+            return ui.showTaskDeleted(deletedTask, tasks.size());
+        }
     }
     
     /**

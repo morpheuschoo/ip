@@ -1,6 +1,7 @@
 package seedu.bartholomew.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,28 @@ public class TaskList {
         return tasks.remove(index - 1);
     }
     
+    public List<Task> deleteMultipleTasks(List<Integer> indices) throws BartholomewExceptions.InvalidTaskNumberException {
+        for (int index : indices) {
+            if (index < 1 || index > tasks.size()) {
+                throw new BartholomewExceptions.InvalidTaskNumberException(index);
+            }
+        }
+        
+        List<Task> deletedTasks = new ArrayList<>();
+        for (int index : indices) {
+            deletedTasks.add(tasks.get(index - 1));
+        }
+        
+        List<Integer> sortedIndices = new ArrayList<>(indices);
+        Collections.sort(sortedIndices, Collections.reverseOrder());
+        
+        for (int index : sortedIndices) {
+            tasks.remove(index - 1);
+        }
+        
+        return deletedTasks;
+    }
+
     /**
      * Marks a task as completed.
      *
@@ -94,7 +117,6 @@ public class TaskList {
      * @throws BartholomewExceptions.InvalidTaskNumberException If the index is invalid
      */
     public Task getTask(int index) throws BartholomewExceptions.InvalidTaskNumberException {
-        assert index >= 0 && index < tasks.size() : "Task index out of bounds: " + index;
         if (index < 1 || index > tasks.size()) {
             throw new BartholomewExceptions.InvalidTaskNumberException(index);
         }

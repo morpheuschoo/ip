@@ -1,6 +1,8 @@
 package seedu.bartholomew.parser;
 
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import seedu.bartholomew.command.CommandType;
 import seedu.bartholomew.tasks.Deadline;
@@ -50,6 +52,68 @@ public class Parser {
             String invalidNumber = input.substring(prefixLen).trim();
             throw new BartholomewExceptions.InvalidTaskNumberException(invalidNumber);
         }
+    }
+
+    /**
+     * Parses multiple task numbers from the user input for deletion.
+     * Supports formats: "delete 1" or "delete 1, 2, 3"
+     *
+     * @param input The user input string
+     * @param command The command type (DELETE)
+     * @param totalTasks The maximum valid task number
+     * @return List of parsed task numbers
+     * @throws BartholomewExceptions.InvalidTaskNumberException If format is wrong or numbers are invalid
+     */
+    public List<Integer> parseMultipleTaskNumbers(String input, CommandType command, int totalTasks)
+            throws BartholomewExceptions.InvalidTaskNumberException {
+        
+        int prefixLen = 0;
+        if (command == CommandType.DELETE) {
+            prefixLen = 6;
+        } else {
+            throw new IllegalArgumentException(
+                    command.name() + " cannot be used with parseMultipleTaskNumbers");
+        }
+
+        String numbersPart = input.substring(prefixLen).trim();
+        
+        if (numbersPart.isEmpty()) {
+            throw new BartholomewExceptions.InvalidTaskNumberException("");
+        }
+        
+        List<Integer> taskNumbers = new ArrayList<>();
+        
+        if (numbersPart.contains(",")) {
+            String[] parts = numbersPart.split(",");
+            
+            for (String part : parts) {
+                String trimmedPart = part.trim();
+                if (trimmedPart.isEmpty()) {
+                    continue;
+                }
+                
+                try {
+                    int taskNo = Integer.parseInt(trimmedPart);
+                    
+                    if (taskNo <= 0 || taskNo > totalTasks) {
+                        throw new BartholomewExceptions.InvalidTaskNumberException(taskNo);
+                    }
+                    
+                    taskNumbers.add(taskNo);
+                } catch (NumberFormatException e) {
+                    throw new BartholomewExceptions.InvalidTaskNumberException(trimmedPart);
+                }
+            }
+        } else {
+            int taskNo = parseTaskNumber(input, command, totalTasks);
+            taskNumbers.add(taskNo);
+        }
+        
+        if (taskNumbers.isEmpty()) {
+            throw new BartholomewExceptions.InvalidTaskNumberException("");
+        }
+        
+        return taskNumbers;
     }
 
     public Task parseTask(String input) 
