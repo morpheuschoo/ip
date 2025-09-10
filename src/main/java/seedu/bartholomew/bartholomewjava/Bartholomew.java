@@ -39,10 +39,12 @@ public class Bartholomew {
             try {
                 this.tasks = new TaskList(storage.load());
             } catch (BartholomewExceptions.FileReadException e) {
-                
+                // Log error or show notification that existing tasks couldn't be loaded
+                System.err.println("Could not load tasks: " + e.getMessage());
             }
         } catch (BartholomewExceptions.StorageException e) {
-            
+            // Log error or show notification that storage couldn't be initialized
+            System.err.println("Could not initialize storage: " + e.getMessage());
         }
     }
 
@@ -55,20 +57,10 @@ public class Bartholomew {
             try {
                 storage.save(tasks.getTasks());
             } catch (BartholomewExceptions.FileWriteException e) {
-                
+                // Log error or notify user that tasks couldn't be saved
+                System.err.println("Could not save tasks: " + e.getMessage());
             }
         }
-    }
-
-    /**
-     * Main entry point for the Bartholomew application.
-     * Creates a new Bartholomew instance and runs it.
-     *
-     * @param args Command line arguments (not used)
-     */
-    public static void main(String[] args) {
-        // This will be handled by the GUI launcher
-        System.out.println("Hello!");
     }
 
     /**
@@ -87,66 +79,123 @@ public class Bartholomew {
 
             switch (commandType) {
             case BYE:
-                shouldExit = true;
-                return ui.showGoodbye();
+                return handleByeCommand();
             case LIST:
-                return ui.showTaskList(tasks.getTasks());
+                return handleListCommand();
             case TODO:
-                // Fallthrough
+                // Passthrough
             case DEADLINE:
-                // Fallthrough
+                // passthrough
             case EVENT:
-                try {
-                    Task task = parser.parseTask(input);
-                    tasks.addTask(task);
-                    saveToStorage();
-                    return ui.showTaskAdded(task, tasks.size());
-                } catch (BartholomewExceptions e) {
-                    return ui.showError(e.getMessage());
-                } catch (DateTimeParseException e) {
-                    return ui.showDateFormatError();
-                }
+                return handleAddTaskCommand(input);
             case MARK:
-                try {
-                    int taskNo = parser.parseTaskNumber(input, CommandType.MARK, tasks.size());
-                    Task markedTask = tasks.markTaskAsDone(taskNo);
-                    saveToStorage();
-                    return ui.showTaskMarked(markedTask);
-                } catch (BartholomewExceptions e) {
-                    return ui.showError(e.getMessage());
-                }
+                return handleMarkCommand(input);
             case UNMARK:
-                try {
-                    int taskNo = parser.parseTaskNumber(input, CommandType.UNMARK, tasks.size());
-                    Task unmarkedTask = tasks.markTaskAsNotDone(taskNo);
-                    saveToStorage();
-                    return ui.showTaskUnmarked(unmarkedTask);
-                } catch (BartholomewExceptions e) {
-                    return ui.showError(e.getMessage());
-                }
+                return handleUnmarkCommand(input);
             case DELETE:
-                try {
-                    int taskNo = parser.parseTaskNumber(input, CommandType.DELETE, tasks.size());
-                    Task deletedTask = tasks.deleteTask(taskNo);
-                    saveToStorage();
-                    return ui.showTaskDeleted(deletedTask, tasks.size());
-                } catch (BartholomewExceptions e) {
-                    return ui.showError(e.getMessage());
-                }
+                return handleDeleteCommand(input);
             case FIND:
-                try {
-                    String searchTerm = parser.parseSearchTerm(input);
-                    List<Task> matchingTasks = tasks.findTasks(searchTerm);
-                    return ui.showSearchResults(matchingTasks, searchTerm);
-                } catch (BartholomewExceptions e) {
-                    return ui.showError(e.getMessage());
-                }
+                return handleFindCommand(input);
             default:
                 return ui.showError("I'm not sure what '" + input + "' means.");
             }
+        } catch (BartholomewExceptions e) {
+            return ui.showError(e.getMessage());
+        } catch (DateTimeParseException e) {
+            return ui.showDateFormatError();
         } catch (Exception e) {
-            return ui.showError("An error occurred: " + e.getMessage());
+            // Only catch truly unexpected exceptions as a last resort
+            return ui.showError("An unexpected error occurred: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Handle the bye command.
+     * 
+     * @return A goodbye message
+     */
+    private String handleByeCommand() {
+        shouldExit = true;
+        return ui.showGoodbye();
+    }
+    
+    /**
+     * Handle the list command.
+     * 
+     * @return A formatted list of tasks
+     */
+    private String handleListCommand() {
+        return ui.showTaskList(tasks.getTasks());
+    }
+    
+    /**
+     * Handle commands that add a task.
+     * 
+     * @param input The user input
+     * @return A message confirming the task addition
+     * @throws BartholomewExceptions If there is an error parsing the task
+     * @throws DateTimeParseException If there is an error parsing the date
+     */
+    private String handleAddTaskCommand(String input) throws BartholomewExceptions, DateTimeParseException {
+        Task task = parser.parseTask(input);
+        tasks.addTask(task);
+        saveToStorage();
+        return ui.showTaskAdded(task, tasks.size());
+    }
+    
+    /**
+     * Handle the mark command.
+     * 
+     * @param input The user input
+     * @return A message confirming the task was marked
+     * @throws BartholomewExceptions If there is an error with the task number
+     */
+    private String handleMarkCommand(String input) throws BartholomewExceptions {
+        int taskNo = parser.parseTaskNumber(input, CommandType.MARK, tasks.size());
+        Task markedTask = tasks.markTaskAsDone(taskNo);
+        saveToStorage();
+        return ui.showTaskMarked(markedTask);
+    }
+    
+    /**
+     * Handle the unmark command.
+     * 
+     * @param input The user input
+     * @return A message confirming the task was unmarked
+     * @throws BartholomewExceptions If there is an error with the task number
+     */
+    private String handleUnmarkCommand(String input) throws BartholomewExceptions {
+        int taskNo = parser.parseTaskNumber(input, CommandType.UNMARK, tasks.size());
+        Task unmarkedTask = tasks.markTaskAsNotDone(taskNo);
+        saveToStorage();
+        return ui.showTaskUnmarked(unmarkedTask);
+    }
+    
+    /**
+     * Handle the delete command.
+     * 
+     * @param input The user input
+     * @return A message confirming the task was deleted
+     * @throws BartholomewExceptions If there is an error with the task number
+     */
+    private String handleDeleteCommand(String input) throws BartholomewExceptions {
+        int taskNo = parser.parseTaskNumber(input, CommandType.DELETE, tasks.size());
+        Task deletedTask = tasks.deleteTask(taskNo);
+        saveToStorage();
+        return ui.showTaskDeleted(deletedTask, tasks.size());
+    }
+    
+    /**
+     * Handle the find command.
+     * 
+     * @param input The user input
+     * @return A message showing the search results
+     * @throws BartholomewExceptions If there is an error parsing the search term
+     */
+    private String handleFindCommand(String input) throws BartholomewExceptions {
+        String searchTerm = parser.parseSearchTerm(input);
+        List<Task> matchingTasks = tasks.findTasks(searchTerm);
+        return ui.showSearchResults(matchingTasks, searchTerm);
     }
     
     /**
