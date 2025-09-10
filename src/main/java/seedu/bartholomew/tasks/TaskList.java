@@ -2,6 +2,7 @@ package seedu.bartholomew.tasks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import seedu.bartholomew.exceptions.BartholomewExceptions;
 
@@ -108,19 +109,11 @@ public class TaskList {
      * @return A list of tasks matching the search term
      */
     public List<Task> findTasks(String searchTerm) {
-        List<Task> matchingTasks = new ArrayList<>();
         String searchTermLower = searchTerm.toLowerCase();
         
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(searchTermLower)) {
-                matchingTasks.add(task);
-            }
-        }
-        
-        assert searchTerm != null : "Search term cannot be null";
-        assert matchingTasks != null : "matchingTasks should never be null";
-
-        return matchingTasks;
+        return tasks.stream()
+            .filter(task -> task.getDescription().toLowerCase().contains(searchTermLower))
+            .collect(Collectors.toList());
     }
     
     /**
