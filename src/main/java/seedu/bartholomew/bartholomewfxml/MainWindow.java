@@ -10,8 +10,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import seedu.bartholomew.bartholomewjava.Bartholomew;
+
 /**
- * Controller for the main GUI.
+ * Controller for MainWindow. Provides the layout for the other controls.
  */
 public class MainWindow extends AnchorPane {
     @FXML
@@ -23,45 +24,57 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
-    private Bartholomew duke;
+    private Bartholomew bartholomew;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaBartholomew.png"));
+    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.png"));
+    private Image bartholomewImage = new Image(this.getClass().getResourceAsStream("/images/bartholomew.png"));
 
+    /**
+     * Initializes the chat with Bartholomew.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Duke instance */
-    public void setDuke(Bartholomew d) {
-        duke = d;
+    public void setBartholomew(Bartholomew b) {
+        bartholomew = b;
+        displayWelcome();
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Duke's reply and then appends them to
+     * Creates two dialog boxes, one echoing user input and the other containing Bartholomew's reply and then appends them to
      * the dialog container. Clears the user input after processing.
      */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = duke.getResponse(input);
+        String response = bartholomew.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                DialogBox.getBartholomewDialog(response, bartholomewImage)
         );
         userInput.clear();
 
-        if (duke.shouldExit()) {
-            Platform.exit();
+        if (bartholomew.shouldExit()) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500);
+                    Platform.runLater(() -> Platform.exit());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }
 
+    /**
+     * Displays the welcome message from Bartholomew.
+     */
     public void displayWelcome() {
-        String welcomeMessage = duke.getWelcome();
+        String welcomeMessage = bartholomew.getWelcome();
         dialogContainer.getChildren().add(
-            DialogBox.getDukeDialog(welcomeMessage, dukeImage)
+            DialogBox.getBartholomewDialog(welcomeMessage, bartholomewImage)
         );
     }
 }
-
