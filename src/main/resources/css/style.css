@@ -1,0 +1,50 @@
+/* ScrollBar Styling */
+.scroll-pane {
+   -fx-background-color: transparent;
+   -fx-border-color: transparent;
+   -fx-padding: 0;
+}
+
+.scroll-bar:vertical {
+   -fx-background-color: transparent;
+   -fx-pref-width: 10;
+}
+
+.scroll-bar:vertical .track {
+   -fx-background-color: transparent;
+   -fx-border-color: transparent;
+   -fx-background-radius: 0;
+   -fx-border-radius: 0;
+}
+
+.scroll-bar:vertical .thumb {
+   -fx-background-color: #566573;
+   -fx-background-radius: 5;
+   -fx-opacity: 0.5;
+}
+
+.scroll-bar:vertical .thumb:hover,
+.scroll-bar:vertical .thumb:pressed {
+   -fx-background-color: #3498DB;
+   -fx-opacity: 0.7;
+}
+
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+   -fx-shape: " ";
+   -fx-padding: 0;
+}
+
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+   -fx-background-color: transparent;
+   -fx-background-radius: 0;
+   -fx-padding: 0;
+}
+
+/* Make the scrollbar only appear when hovering over the ScrollPane */
+.scroll-bar {
+   -fx-opacity: 0.3;
+}
+
+.scroll-pane:hover .scroll-bar {
+   -fx-opacity: 0.8;
+}

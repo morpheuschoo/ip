@@ -83,9 +83,9 @@ public class Bartholomew {
             case LIST:
                 return handleListCommand();
             case TODO:
-                // Passthrough
+                // fallthrough
             case DEADLINE:
-                // Passthrough
+                // fallthrough
             case EVENT:
                 return handleAddTaskCommand(input);
             case MARK:

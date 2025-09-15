@@ -1,7 +1,5 @@
 package seedu.bartholomew.bartholomewfxml;
 
-import seedu.bartholomew.bartholomewjava.Bartholomew;
-
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -10,8 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import seedu.bartholomew.bartholomewjava.Bartholomew;
+
 /**
- * A GUI for Duke using FXML.
+ * A GUI for Bartholomew using FXML.
  */
 public class Main extends Application {
 
@@ -23,12 +23,15 @@ public class Main extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
-            stage.setScene(scene);
-            MainWindow controller = fxmlLoader.getController();
-            controller.setDuke(bartholomew);
+
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             
-            // Show welcome message on startup
-            controller.displayWelcome();
+            stage.setScene(scene);
+            stage.setTitle("Bartholomew");
+            stage.setResizable(false);
+            
+            MainWindow mainWindow = fxmlLoader.getController();
+            mainWindow.setBartholomew(bartholomew);
             
             stage.show();
         } catch (IOException e) {
@@ -36,5 +39,3 @@ public class Main extends Application {
         }
     }
 }
-
-
