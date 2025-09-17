@@ -29,6 +29,10 @@ dependencies {
     implementation group: 'org.openjfx', name: 'javafx-graphics', version: javaFxVersion, classifier: 'linux'
 }
 
+shadowJar {
+    archiveFileName = 'bartholomew.jar'
+}
+
 // checkstyle {
 //     toolVersion = '11.0.0'
 // }
